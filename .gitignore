@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+db.json
+*.log
+node_modules/
+.deploy*/
+public/baidu_verify_1OXUz4g7Hy.html
+public/googlec5d7c14ad214a926.html
+public/sitemap.xml
+public/baidusitemap.xml

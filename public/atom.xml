@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>The Key</title>
+  
+  <subtitle>Stay Hungry, Stay Foolish</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://www.thekey.net.cn/"/>
+  <updated>2020-03-13T14:02:19.504Z</updated>
+  <id>http://www.thekey.net.cn/</id>
+  
+  <author>
+    <name>October</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>策略模式</title>
+    <link href="http://www.thekey.net.cn/2019/10/01/%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://www.thekey.net.cn/2019/10/01/策略模式/</id>
+    <published>2019-10-01T04:24:13.000Z</published>
+    <updated>2020-03-13T14:02:19.504Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p><em>根据平均数定律，我们绝大部份人注定平凡。这样说并不能带来任何慰藉，但真的，中等就好，生命平庸，真理平常，道德平凡。</em>         </p><p align="right"><em>——朱利安﹒巴恩斯《终结的感觉》</em></p></blockquote><p><img src="https://s1.ax1x.com/2020/03/13/8KTGJ1.jpg" alt="8KTGJ1.jpg"></p><center><em>俄罗斯索洛维茨基岛上的修道院清晨湖中倒影</em></center><h1 id="1-问题"><a href="#1-问题" class="headerlink" title="1.问题"></a>1.问题</h1><ul><li><strong>我们在开发过程中经常遇到的一个问题，在一个系统里面有许多类，它们之间的区别仅在于它们的行为。</strong>  </li><li><strong>一个系统需要动态地在几种算法中选择一种。</strong>  </li></ul><blockquote><p>   <em>这样的问题描述可能有些抽象，我们来举一个很具体的例子：<br>        我们现在的需求是封装一个考勤模块，对公司的考勤、请假进行管理。</em></p></blockquote><h1 id="2-开始实现"><a href="#2-开始实现" class="headerlink" title="2.开始实现"></a>2.开始实现</h1><h2 id="1-0版本"><a href="#1-0版本" class="headerlink" title="1.0版本  "></a><strong>1.0版本</strong>  </h2><p><strong>实现</strong>   </p><p>我们定义一个考勤实现类，在这个类中实现打卡管理（早上9点上班、下午6点下班）、请假管理的功能。</p><p><strong>那么问题来了</strong></p><p>公司颁布了新规定，技术部采用弹性工作制（早上11点之前上班打卡，9小时后可以下班打卡），其他部门不变。好吧，我们需要做一些改变。</p><h2 id="1-1版本"><a href="#1-1版本" class="headerlink" title="1.1版本  "></a><strong>1.1版本</strong>  </h2><p><strong>实现</strong>   </p><p>为了让系统拥有更好的复用性，我们决定采用继承的方式，我们定义一个考勤的基类，然后为每个部门设置一个子类，在技术部的子类中单独实现打卡管理。</p><p><strong>那么问题又来了</strong></p><p>销售部要求，在销售旺季销售人员不可以请假，我们要关闭请假功能。</p><h2 id="1-2版本"><a href="#1-2版本" class="headerlink" title="1.2版本  "></a><strong>1.2版本</strong>  </h2><p><strong>实现</strong>   </p><p>很显然如果我们让销售部的子类的请假实现覆盖基类的实现，并在子类的请假实现中是什么都不做，似乎可以解决问题。但是有了前两次的尝试，我们发现在整个功能设计的过程中，<strong>唯一不变的就是变化</strong>，为了避免日后其他部门再有什么特殊需求，我们决定采用接口的方案，定义考勤接口、请假接口，接口定义考勤、请假的方法，如果哪个部门需要，就子类自己去实现，满足你们所有需求。</p><p><strong>那么问题又又又来了</strong><br>首先接口不能定义具体的实现，需要每个子类自己实现，这样我们在开发过程中会写很多的重复代码；其次，当某个功能需要调整时（例如考勤要求8点上班打卡），需要所有子类都修改，我们要检查所有子类的实现是否正确；第三，如果新增其他需求（例如加班管理），那么所有子类又需要重新实现一遍新功能，这是我们不能接受的。</p><h2 id="1-3版本"><a href="#1-3版本" class="headerlink" title="1.3版本  "></a><strong>1.3版本</strong>  </h2><p>经历了上面的所有尝试，我们希望设计一个有弹性的，低耦合的，利于维护的系统。首先，接口的方案还是有可取之处的，因为它足够有弹性，但为了解决1.2版本中的问题，我们需要制造一组专门的类来作为接口的实现，我们称做算法族。我们在不同部门的子类中为考勤接口创建部门需要的实现实例，我们甚至可以在运行时改变这个实例（例如：为我们在周五设置下午4点下班打卡）。这样说可能有些抽象，我们来看一下类图。</p><p><img src="https://img-blog.csdnimg.cn/20191002153438787.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xhbnllMTE=,size_16,color_FFFFFF,t_70" alt="Foo"></p><p>以上就是策略模式就具体应用，我们来看一下具体的代码实现</p><p><strong>BaseDepartment.java</strong>  </p><pre><code>public abstract class BaseDepartment {    IAttendance iAttendance;    ILeave iLeave;    public BaseDepartment() {    }    public void goOnDuty() {        if (iAttendance != null) {            iAttendance.goOnDuty ();        }    }    public void offDuty() {        if (iAttendance != null) {            iAttendance.offDuty ();        }    }    public void onLeave() {        if (iLeave != null) {            iLeave.onLeave ();        }    }    public void setIAttendance(IAttendance iAttendance) {        this.iAttendance = iAttendance;    }    public void setILeave(ILeave iLeave) {        this.iLeave = iLeave;    }}</code></pre><p><strong>IAttendance.java</strong>  </p><pre><code>public interface IAttendance {    void goOnDuty();    void offDuty();}</code></pre><p><strong>ILeave</strong></p><pre><code>public interface ILeave {   void onLeave();}</code></pre><p><strong>NormalAttendance.java</strong></p><pre><code>public class NormalAttendance implements IAttendance {    @Override    public void goOnDuty() {        System.out.println (&quot;9点之前打卡&quot;);    }    @Override    public void offDuty() {        System.out.println (&quot;18点后下班&quot;);    }}</code></pre><p><strong>ElasticityAttendance.java</strong></p><pre><code>public class ElasticityAttendance implements IAttendance {    @Override    public void goOnDuty() {        System.out.println (&quot;弹性工作，11点之前打卡&quot;);    }    @Override    public void offDuty() {        System.out.println (&quot;弹性工作，打卡9小时后下班&quot;);    }}</code></pre><p><strong>NormalLeave.java</strong></p><pre><code>public class NormalLeave implements ILeave {    @Override    public void onLeave() {        System.out.println (&quot;休倒休假&quot;);    }}</code></pre><p><strong>AnnualLeave.java</strong></p><pre><code>public class AnnualLeave implements ILeave {    @Override    public void onLeave() {        System.out.println (&quot;休年假&quot;);    }}</code></pre><p><strong>TechnologyDepartment.java</strong></p><pre><code>public class TechnologyDepartment extends BaseDepartment {    public TechnologyDepartment() {        IAttendance iAttendance = new ElasticityAttendance ();        setIAttendance (iAttendance);        ILeave iLeave = new NormalLeave ();        setILeave (iLeave);    }}</code></pre><p><strong>MarketingDepartment.java</strong></p><pre><code>public class MarketingDepartment extends BaseDepartment {    public MarketingDepartment() {        IAttendance iAttendance = new NormalAttendance ();        setIAttendance (iAttendance);    }}</code></pre><p><strong>OtherDepartment.java</strong></p><pre><code>public class OtherDepartment extends BaseDepartment {    public OtherDepartment() {        IAttendance iAttendance = new NormalAttendance ();        setIAttendance (iAttendance);        ILeave iLeave = new NormalLeave ();        setILeave (iLeave);    }}</code></pre><h1 id="3-总结"><a href="#3-总结" class="headerlink" title="3.总结"></a>3.总结</h1><p>作为一个开发人员，我们在设计一个系统甚至是一个功能模块的时候，应该有着很敏锐的大局观，面对后续的迭代及扩展，我们在设计之初就应该有很好的打算，所以在现实开发工作中，版本1.0、1.1、1.2是不应该存在的。<strong>策略模式就是定义了算法族，分别封装起来，让它们之间可以相互替换，这个模式可以让算法独立于使用者，避免使用多重条件判断，扩展性更加良好。</strong> </p><h1 id="4-注意"><a href="#4-注意" class="headerlink" title="4.注意"></a>4.注意</h1><p>如果一个系统的策略多于四个，就需要考虑使用混合模式，解决策略类膨胀的问题（后续介绍）。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;根据平均数定律，我们绝大部份人注定平凡。这样说并不能带来任何慰藉，但真的，中等就好，生命平庸，真理平常，道德平凡。&lt;/em&gt;         &lt;/p&gt;
+&lt;p align=&quot;right&quot;&gt;&lt;em&gt;——朱利安﹒巴恩斯《终结的感觉》&lt;/em&gt;&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="设计模式" scheme="http://www.thekey.net.cn/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>前言</title>
+    <link href="http://www.thekey.net.cn/2019/03/11/%E5%89%8D%E8%A8%80/"/>
+    <id>http://www.thekey.net.cn/2019/03/11/前言/</id>
+    <published>2019-03-11T13:37:30.000Z</published>
+    <updated>2019-03-30T07:48:18.505Z</updated>
+    
+    <content type="html"><![CDATA[<p>&#8195;&#8195;2019年3月11日，终于决定开始整理以往博客，温故知新。并与今日起开始在The Key上写博客，希望通过积累，进一步增进技术。</p><p>深知研发之路不进则退，Stay Hungry,Stay Foolish!</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&amp;#8195;&amp;#8195;2019年3月11日，终于决定开始整理以往博客，温故知新。并与今日起开始在The Key上写博客，希望通过积累，进一步增进技术。&lt;/p&gt;
+&lt;p&gt;深知研发之路不进则退，Stay Hungry,Stay Foolish!&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+      <category term="前言" scheme="http://www.thekey.net.cn/tags/%E5%89%8D%E8%A8%80/"/>
+    
+  </entry>
+  
+</feed>
