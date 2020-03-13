@@ -83,7 +83,7 @@ deploy:
 - type: git
   repo: 
     github: https://github.com/gaoxiuyang/gaoxiuyang.github.io.git
-    coding: https://git.dev.tencent.com/gaoxiuyang/gaoxiuyang.git
+    # coding: https://git.dev.tencent.com/gaoxiuyang/gaoxiuyang.git
   branch: master
 
 
